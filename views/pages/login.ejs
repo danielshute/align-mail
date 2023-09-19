@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Align Mail</title>
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div id="login-tab" class="login-child">
+            <div class="login-header">
+                <h1>Login</h1>
+                <p>Login to your account</p>
+            </div>
+            <div class="inputs">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password">
+            </div>
+            <div class="button-container">
+                <button id="submit">Login</button>
+                <p>New to Align Mail? <a id="toggle" href="#">Register</a></p>
+            </div>
+        </div>
+
+        <div id="signup-tab" class="d-none login-child">
+            <div class="login-header">
+                <h1>Signup</h1>
+                <p>Create your Align account</p>
+            </div>
+            <div></div>
+            <div class="inputs">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="signupUsername">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="signupPassword">
+                <label for="passwordConf">Confirm password:</label>
+                <input type="password" name="passwordConf" id="signupPasswordConf">
+            </div>
+            <div class="button-container">
+                <button id="signupSubmit">Create account</button>
+                <p>Already have an account? <a id="toggle" href="#">Login</a></p>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="/assets/js/login.js"></script>
+</body>
+
+</html>
