@@ -37,22 +37,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const password = document.querySelector('#signupPassword').value
         const passwordConf = document.querySelector('#signupPasswordConf').value
 
-        if(username == ''){
+        if (username == '') {
             notyf.error('You need to enter a username');
             return
         }
 
-        if(password == ''){
+        if (password == '') {
             notyf.error('You need to enter a password');
             return
         }
 
-        if(passwordConf == ''){
+        if (passwordConf == '') {
             notyf.error('Please enter your password again to confirm');
             return
         }
 
-        if(password !== passwordConf){
+        if (password !== passwordConf) {
             notyf.error('Passwords do not match');
             return
         }
@@ -81,13 +81,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const toggles = document.querySelectorAll('#toggle').forEach(item => {
         item.addEventListener('click', event => {
-          event.preventDefault();
-          login.classList.toggle('d-none')
-          signup.classList.toggle('d-none')
+            event.preventDefault();
+            login.classList.toggle('d-none')
+            signup.classList.toggle('d-none')
         })
     })
-    
 
 
-    
+
+
 });

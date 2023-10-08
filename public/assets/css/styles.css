@@ -281,6 +281,7 @@ html {
     grid-column: 8 / 21;
     border-left-color: #3D3D3D;
     align-self: center;
+    overflow: scroll;
 }
 
 .email-detail-info {

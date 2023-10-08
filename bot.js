@@ -5,7 +5,7 @@ require('./db.js')
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] });
 
 client.once(Events.ClientReady, c => {
-    console.log(`Bot online! Logged in as ${c.user.tag}`);
+    console.log(`Discord Bot Connected - ${c.user.tag}`);
 });
 
 async function sendEmbed(userId, content) {

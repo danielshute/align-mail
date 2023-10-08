@@ -11,11 +11,9 @@ const characterSchema = new mongoose.Schema({
   },
   forename: {
     type: String,
-    unique: false,
   },
   surname: {
     type: String,
-    unique: false,
   },
   photo: {
     type: String,

@@ -57,10 +57,20 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/characters', (req, res) => {
+  if(req.session.loggedIn != true){
+    return res.redirect('/login')
+  }
+
   res.render('pages/characters');
 });
 
 app.get('/dashboard', (req, res) => {
+  if(req.session.loggedIn != true){
+    res.redirect('/login')
+  }
+  if(req.session.characterSelected == null){
+    res.redirect('/characters')
+  }
   res.render('pages/dashboard');
 });
 
@@ -84,6 +94,7 @@ app.get('/logout', (req, res) => {
 
   req.session.username = null;
   req.session.loggedIn = false;
+  req.session.characterSelected = null;
 
   res.redirect('/login')
 });
@@ -124,7 +135,7 @@ app.post('/login', async (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
 
-  const existingUser = await User.findOne({ username });
+  const existingUser = await User.findOne({ username: username.toLowerCase() });
 
   if (existingUser) {
     return res.send({'success':false,'message':'Username already taken'})
@@ -155,32 +166,35 @@ app.post('/signup', async (req, res) => {
 app.post('/characters/create', async (req, res) => {
   const { forename, surname, address } = req.body;
 
-  const user = await User.findOne({ username: 'daniels' });
+  const user = await User.findOne({ username: req.session.username });
 
-
-
-  if(user.characters.length > 5){
+  if (user.characters.length >= 5) {
     return res.send({'success':false,'message':'Maximum characters reached'})
   }
 
-  const existingCharacter = await Character.findOne({ address });
+  const exsistingAddress = await Character.findOne({ address });
 
-  if (existingCharacter) {
+  if (exsistingAddress) {
     return res.send({'success':false,'message':'Email address taken!'})
   }
 
   var count = await Character.count()
   count = count+1
 
-  const newCharacter = new Character({ id: count, forename:forename, surname:surname, address:address });
+  var Eaddress = address.toLowerCase()
+
+  const newCharacter = new Character({ id: count, forename, surname, address: Eaddress });
   await newCharacter.save();
+
+  user.characters.push(newCharacter.id)
+  await user.save()
 
   bot.sendEmbedChannel('1153799160483561582', 
     {
       "content": null,
       "embeds": [
         {
-          "title": "Align Mail - New Chracter Created",
+          "title": "Align Mail - New Character Created",
           "description": "Username: `"+req.session.username+"`\nTime: `"+time+"`\nCharacter Name: `"+forename+" "+surname+"`\nAdress: `"+address+"@mail.align`",
           "color": 2040388
         }
@@ -188,35 +202,54 @@ app.post('/characters/create', async (req, res) => {
       "attachments": []
     }
   )
-
   res.send({'success':true})
 });
 
-app.post('/characters/fetch', async (req, res) => {
-  if(req.session.loggedIn != true){
-    return res.redirect('/login')
+app.get('/characters/fetch', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.session.username });
+
+    const characterPromises = user.characters.map(async (characterId) => {
+      const character = await Character.findOne({ id: characterId });
+      return character;
+    });
+
+    const characters = await Promise.all(characterPromises);
+
+    res.send({ success: true, characters });
+  } catch (error) {
+    console.error(error);
+    res.send({ success: false, message: 'Internal Server Error' });
   }
+});
+
+app.post('/character/select', async (req, res) => {
+  const { id } = req.body;
 
   const user = await User.findOne({ username: req.session.username });
 
-  if(user.characters.length() > 5){
-    return res.send({'success':false,'message':'Maximum characters reached'})
+  if(user.characters.includes(id)){
+    req.session.characterSelected = id;
+    const character = await Character.findOne({ id });
+    await bot.sendEmbedChannel('1158845289810108456', 
+    {
+      "content": null,
+      "embeds": [
+        {
+          "title": "Align Mail - Character Selected",
+          "description": "Username: `"+req.session.username+"`\nTime: `"+time+"`\nCharacter Name: `"+character.forename+" "+character.surname+"`",
+          "color": 2040388
+        }
+      ],
+      "attachments": []
+    }
+  )
+    res.send({ success: true });
+  }else{
+    res.send({ success: false, message: "You don't have that character" });
   }
-
-  const existingCharacter = await Character.findOne({ address });
-
-  if (existingCharacter) {
-    return res.send({'success':false,'message':'Email address taken'})
-  }
-
-
-  const newCharacter = new Character({ forename, surname, address });
-  await newCharacter.save();
-
-
-  res.send({'success':true})
 });
 
 app.listen(80, () => {
-    console.log('Server is running on port 80');
+    console.log('Web Server Open on Port 80');
 });
